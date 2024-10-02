@@ -35,6 +35,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
     })
   ],
   secret: process.env.JWT_SECRET,
+  basePath: process.env.NEXTAUTH_URL,
   pages: {
     signIn: '/',
     verifyRequest: '/'
