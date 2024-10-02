@@ -31,8 +31,8 @@ export default function Main() {
   ];
 
   return (
-    <main className="items-center bg-gray-900 flex flex-col justify-center h-full p-12 text-white w-full">
-      <PhotoCarousel images={images} />
+    <main className="items-center bg-gray-900 flex flex-col justify-center h-full p-4 text-white w-full">
+      <PhotoCarousel images={[]} />
       <div className="flex flex-col gap-1 items-center">
         <span>Juntos</span>
         <span>{formatDifference(new Date(2024, 3, 30))}</span>
