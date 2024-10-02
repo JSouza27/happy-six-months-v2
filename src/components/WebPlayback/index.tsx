@@ -45,6 +45,7 @@ export default function WebPlayback({
   const [deviceId, setDeviceId] = useState('');
   const [trackPosition, setTrackPosition] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
+  const [isActive, setIsActive] = useState(false);
 
   useEffect(() => {
     const script = document.createElement('script');
@@ -96,13 +97,13 @@ export default function WebPlayback({
           context_uri: `spotify:playlist:${playlist}`,
           device_ids: [deviceId],
           offset: {
-            position: 5
+            position: 0
           },
           position_ms: 0
         })
       });
     },
-    [token, playlist]
+    [token, playlist, isActive]
   );
 
   async function handleSeekToPosiotion(positionMs: number) {
@@ -130,7 +131,7 @@ export default function WebPlayback({
           device_ids: [deviceId],
           play: false
         })
-      });
+      }).then(() => setIsActive(true));
     },
     [token]
   );
@@ -205,10 +206,10 @@ export default function WebPlayback({
   }, [player]);
 
   useEffect(() => {
-    if (deviceId) {
+    if (deviceId && isActive) {
       setPlayback(deviceId, playlist);
     }
-  }, [deviceId, playlist, setPlayback, token]);
+  }, [deviceId, playlist, setPlayback, token, isActive]);
 
   useEffect(() => {
     if (player) {
