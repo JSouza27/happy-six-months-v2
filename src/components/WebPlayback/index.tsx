@@ -7,6 +7,30 @@ type WebPlaybackProps = {
   isPause: boolean;
 };
 
+type StateType = {
+  uri: string;
+  metadata: unknown;
+  disallows: {
+    pausing: boolean;
+    peeking_next: boolean;
+    peeking_prev: boolean;
+    resuming: boolean;
+    seeking: boolean;
+    skipping_next: boolean;
+    skipping_prev: boolean;
+  };
+  paused: boolean;
+  position: number;
+  repeat_mode: number;
+  shuffle: boolean;
+  track_window: {
+    current_track: {
+      name: string;
+      duration_ms: number;
+    };
+  };
+};
+
 export default function WebPlayback({
   token,
   isPause,
@@ -14,9 +38,11 @@ export default function WebPlayback({
 }: WebPlaybackProps) {
   const [player, setPlayer] = useState<any>(undefined);
   const [is_paused, setPaused] = useState(false);
-  const [is_active, setActive] = useState(false);
-  const [current_track, setTrack] = useState(undefined);
-  const [deviceId, setDeviceId] = useState(null);
+  const [current_track, setTrack] = useState<{
+    name: string;
+    duration_ms: number;
+  }>();
+  const [deviceId, setDeviceId] = useState('');
   const [trackPosition, setTrackPosition] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -110,11 +136,10 @@ export default function WebPlayback({
   );
 
   useEffect(() => {
-    //TODO: ADICIONAR ISSO NUM CONTEXTO
     window.onSpotifyWebPlaybackSDKReady = () => {
       const spotifyPlayer = new window.Spotify.Player({
         name: 'Web Playback SDK Quick Start Player',
-        getOAuthToken: (cb) => {
+        getOAuthToken: (cb: (token: string) => void) => {
           cb(token);
         },
         volume: 0.5
@@ -124,35 +149,53 @@ export default function WebPlayback({
         setPlayer(spotifyPlayer);
         spotifyPlayer.connect();
 
-        spotifyPlayer.addListener('ready', ({ device_id }) => {
-          setDeviceId(device_id);
-          if (!deviceId) transferPlayback(device_id);
-          console.log('Ready with Device ID', device_id);
-        });
+        spotifyPlayer.addListener(
+          'ready',
+          ({ device_id }: { device_id: string }) => {
+            setDeviceId(device_id);
+            if (!deviceId) transferPlayback(device_id);
+            console.log('Ready with Device ID', device_id);
+          }
+        );
 
-        spotifyPlayer.addListener('not_ready', ({ device_id }) => {
-          console.log('Device ID has gone offline', device_id);
-        });
+        spotifyPlayer.addListener(
+          'not_ready',
+          ({ device_id }: { device_id: string }) => {
+            console.log('Device ID has gone offline', device_id);
+          }
+        );
 
-        spotifyPlayer.addListener('progress', (state) => {
+        spotifyPlayer.addListener('progress', (state: StateType) => {
           setTrackPosition(state.position);
         });
 
-        spotifyPlayer.on('playback_error', ({ message }) => {
-          console.error('Failed to perform playback', message);
-        });
+        spotifyPlayer.on(
+          'playback_error',
+          ({ message }: { message: string }) => {
+            console.error('Failed to perform playback', message);
+          }
+        );
 
-        spotifyPlayer.on('initialization_error', ({ message }) => {
-          console.error('Failed to initialize', message);
-        });
+        spotifyPlayer.on(
+          'initialization_error',
+          ({ message }: { message: string }) => {
+            console.error('Failed to initialize', message);
+          }
+        );
 
-        spotifyPlayer.on('authentication_error', ({ message }) => {
-          console.error('Failed to authenticate', message);
-        });
+        spotifyPlayer.on(
+          'authentication_error',
+          ({ message }: { message: string }) => {
+            console.error('Failed to authenticate', message);
+          }
+        );
 
-        spotifyPlayer.on('account_error', ({ message }) => {
-          console.error('Failed to validate Spotify account', message);
-        });
+        spotifyPlayer.on(
+          'account_error',
+          ({ message }: { message: string }) => {
+            console.error('Failed to validate Spotify account', message);
+          }
+        );
 
         spotifyPlayer.addListener('autoplay_failed', () => {
           console.log('Autoplay is not allowed by the browser autoplay rules');
@@ -163,14 +206,13 @@ export default function WebPlayback({
 
   useEffect(() => {
     if (deviceId) {
-      console.log(playlist);
       setPlayback(deviceId, playlist);
     }
   }, [deviceId, playlist, setPlayback, token]);
 
   useEffect(() => {
     if (player) {
-      player.addListener('player_state_changed', (state) => {
+      player.addListener('player_state_changed', (state: StateType) => {
         if (!state) {
           return;
         }
@@ -178,10 +220,6 @@ export default function WebPlayback({
         setTrack(state.track_window.current_track);
         setPaused(state.paused);
         setIsLoading(false);
-
-        player.getCurrentState().then((state) => {
-          !state ? setActive(false) : setActive(true);
-        });
       });
     }
   }, [player]);
@@ -197,8 +235,8 @@ export default function WebPlayback({
     <Player
       isLoading={isLoading}
       player={player}
-      trackName={current_track?.name}
-      duration={current_track?.duration_ms}
+      trackName={current_track?.name || ''}
+      duration={current_track?.duration_ms || 0}
       currentTime={trackPosition}
       isPaused={is_paused}
       handleSeekToPosiotion={handleSeekToPosiotion}

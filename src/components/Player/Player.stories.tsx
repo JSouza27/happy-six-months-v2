@@ -23,8 +23,4 @@ export default {
   ]
 } as Meta<typeof Player>;
 
-export const Default: StoryObj<typeof Player> = {
-  args: {
-    title: 'Nome da música'
-  }
-};
+export const Default: StoryObj<typeof Player> = {};
