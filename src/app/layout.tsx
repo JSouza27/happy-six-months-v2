@@ -24,7 +24,8 @@ export const metadata: Metadata = {
     'Um slide de fotos com um player mostrando um pouco dos nossos 6 meses',
   icons: {
     icon: '/favicon.svg'
-  }
+  },
+  themeColor: '#FFA8A6'
 };
 
 export default function RootLayout({
