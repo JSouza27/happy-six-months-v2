@@ -51,7 +51,7 @@ export default function Player({
 
     [&::-webkit-slider-runnable-track]:w-full
     [&::-webkit-slider-runnable-track]:h-0.5
-    [&::-webkit-slider-runnable-track]:bg-gray-200
+    [&::-webkit-slider-runnable-track]:bg-gray-20
     [&::-webkit-slider-runnable-track]:z-0
   `;
 
@@ -70,11 +70,11 @@ export default function Player({
   };
 
   return (
-    <section className="w-full flex flex-col md:col-span-4 items-center justify-center border border-[rgba(255,255,255,0.175)] backdrop-blur bg-[rgba(255,255,255,0.35)] p-4 rounded-lg shadow-md z-20 h-36 max-w-xs md:mb-16">
+    <section className="w-full flex flex-col items-center justify-center bg-[rgba(255,251,251,0.51)] p-4 z-20 h-36 fixed bottom-0 left-0 right-0">
       {!isLoading ? (
         <>
-          <div className="w-72">
-            <span className="text-[#343752]">{trackName}</span>
+          <div className="w-full">
+            <span className="text-[#343752] text-lg">{trackName}</span>
             <input
               className={`appearance-none bg-gray-200 h-0.5 range-sm w-full ${customRangeIcon}`}
               type="range"

@@ -19,8 +19,12 @@ const patrickHand = Patrick_Hand({
 });
 
 export const metadata: Metadata = {
-  title: 'Boilerplate NextJS',
-  description: 'Boilerplate usando React, Typescript, Tailwind e NextJS'
+  title: 'Lembranças de 6 meses',
+  description:
+    'Um slide de fotos com um player mostrando um pouco dos nossos 6 meses',
+  icons: {
+    icon: '/favicon.svg'
+  }
 };
 
 export default function RootLayout({

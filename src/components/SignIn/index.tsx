@@ -1,4 +1,3 @@
-import SpotfyLogo from '@/../public/img/spotify-icon.svg';
 import Image from 'next/image';
 import { handleLogin } from '../../actions/actions';
 
@@ -10,7 +9,7 @@ export default function SignIn() {
         type="submit"
       >
         <Image
-          src={SpotfyLogo}
+          src={'/img/spotify-icon.svg'}
           width={14}
           height={14}
           alt="Picture of the author"
