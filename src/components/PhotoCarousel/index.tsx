@@ -26,6 +26,7 @@ export default function PhotoCarousel({ images }: PhotoCarouselProps) {
                     alt={`imagem do casal-${index}`}
                     fill
                     style={{ objectFit: 'cover' }}
+                    quality={75}
                   />
                 </CardContent>
               </Card>

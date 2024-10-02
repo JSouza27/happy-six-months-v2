@@ -42,7 +42,7 @@ export default function Home() {
       </div>
       {session?.user.accessToken && (
         <WebPlayback
-          playlist={'6JlzOScDgpNGncze1HQccf'}
+          playlist={process.env.NEXT_PUBLIC_PLAYLIST!}
           token={session?.user.accessToken}
           isPause
         />
